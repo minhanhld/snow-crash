@@ -1,0 +1,54 @@
+int main(int argc, char** argv)
+{
+    char line[256];
+    int  fd;
+    int  index;
+    bool ld_preload_detected = false;
+
+    if (ptrace(PTRACE_TRACEME, 0, 1, 0) < 0) {
+        puts("You should not reverse this");
+        return 1;
+    }
+
+    if (getenv("LD_PRELOAD") != NULL) {
+        fwrite("Injection Linked lib detected exit..\n", 1, 0x25, stderr);
+        return 1;
+    }
+
+    if (open("/etc/ld.so.preload", 0) >= 1) {
+        fwrite("Injection Linked lib detected exit..\n", 1, 0x25, stderr);
+        return 1;
+    }
+
+    fd = syscall_open("/proc/self/maps", 0);
+    if (fd == -1) {
+        fwrite("/proc/self/maps is unaccessible, probably a LD_PRELOAD attempt exit..\n",
+               1, 0x46, stderr);
+        return 1;
+    }
+
+    while (syscall_gets(line, sizeof(line), fd) != 0) {
+        if (isLib(line, &DAT_08048c2b))
+            continue;
+        ld_preload_detected = true;
+        if (isLib(line, &DAT_08048c30)) {
+            if (argc != 2) {
+                fwrite("You need to provide only one arg.\n", 1, 0x22, stderr);
+                return 1;
+            }
+            goto print_flag;
+        }
+        if (afterSubstr(line, "00000000 00:00 0") == 0) {
+            fwrite("LD_PRELOAD detected through memory maps exit ..\n",
+                   1, 0x30, stderr);
+            return 1;
+        }
+    }
+
+print_flag:
+    for (index = 0; index < (int)strlen(argv[1]); index++)
+        putchar((unsigned char)argv[1][index] + index);
+
+    fputc('\n', stdout);
+    return 0;
+}

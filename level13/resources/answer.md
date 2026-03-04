@@ -1,0 +1,3 @@
+After decompiling the binary with ghidra, we see that the binary isn't too complicated, it calls getuid and checks if the UID is equal to 4242, if not it exits.
+There aren't any users with that UID, and we can't create one.
+Thanks to ghidra, not only do we have access to the main, we also have access to ft_des, so we could technically rewrite that function in the language we want and run it on the encrypted token we can see in main. But another easier option is to use GDB and skip the part of the code where getuid is called. We can set a breakpoint with break right before, and then jump to the section of the code that calls ft_des.

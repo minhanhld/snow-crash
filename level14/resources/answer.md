@@ -1,4 +1,4 @@
-# Level 14 — Getflag Analysis
+# Level 14
 
 There's nothing in the home folder, no interesting files that flag14 or level14 could execute.
 

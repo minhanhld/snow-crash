@@ -1,4 +1,11 @@
-/etc/passwd shows the hash for the  password of user flag01 : 42hDRfypTqqnw
-We can use John the Ripper to try and crack it :
+# Level 01
+
+`/etc/passwd` shows the hash for the password of user `flag01`: `42hDRfypTqqnw`
+
+We can use John the Ripper to try and crack it:
+
+```bash
 john <fileToCrack>
-We get the password : abcdefg
+```
+
+We get the password: `abcdefg`
